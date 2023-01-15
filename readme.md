@@ -73,7 +73,9 @@ use rviz to visualize the topic pointcloud2, topic name etc.
 
 Example: `./samples/*.pcd`
 
-
+```bash
+pcl_viewer *.pcd
+```
 
 ## Contributing
 
