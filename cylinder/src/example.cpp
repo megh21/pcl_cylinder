@@ -16,16 +16,16 @@ void cloud_cb(const sensor_msgs::PointCloud2ConstPtr& cloud_msg)
           pcl::PCLPointCloud2* cloud = new pcl::PCLPointCloud2;
           pcl::PCLPointCloud2ConstPtr cloudPtr(cloud);
           pcl::PCLPointCloud2 cloud_filtered;
-          std::cerr << "original" << std::endl;
+          // std::cerr << "original" << std::endl;
           
           // Convert to PCL data type
           pcl_conversions::toPCL(*cloud_msg, *cloud);
-          std::cerr << "to PCL" << std::endl;
+          // std::cerr << "to PCL" << std::endl;
           
           // Perform the actual filtering
           pcl::VoxelGrid<pcl::PCLPointCloud2> sor;
           sor.setInputCloud (cloudPtr);
-          sor.setLeafSize (0.1, 0.1, 0.1);
+          sor.setLeafSize (0.01, 0.01, 0.01);
           sor.filter (cloud_filtered);
 
           // Convert to ROS data type

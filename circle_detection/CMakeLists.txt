@@ -14,12 +14,12 @@ find_package(catkin REQUIRED COMPONENTS
 ## System dependencies are found with CMake's conventions
 find_package(PCL REQUIRED)
 
-catkin_package(
-  # INCLUDE_DIRS include
-  LIBRARIES circle_detection
-  CATKIN_DEPENDS roscpp sensor_msgs pcl_conversions pcl_ros
-  DEPENDS PCL
-)
+# catkin_package(
+#   # INCLUDE_DIRS include
+#   LIBRARIES circle_detection
+#   CATKIN_DEPENDS roscpp sensor_msgs pcl_conversions pcl_ros
+#   DEPENDS PCL
+# )
 
 include_directories(
   ${catkin_INCLUDE_DIRS}
@@ -32,9 +32,9 @@ add_executable(circle_detection src/circle_detection.cpp)
 target_link_libraries(circle_detection  ${catkin_LIBRARIES}  ${PCL_LIBRARIES}
 )
 
-install(TARGETS circle_detection
-  ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-  LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-  RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
-)
+# install(TARGETS circle_detection
+#   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+#   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+#   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+# )
 

@@ -11,30 +11,9 @@
 int main ()
 {
   pcl::PointCloud<pcl::PointXYZ>::Ptr cloud(new pcl::PointCloud<pcl::PointXYZ>);
-  pcl::io::loadPCDFile<pcl::PointXYZ> ("table_scene_mug_stereo_textured.pcd", *cloud);
-  // // // Fill in the cloud data
-  // cloud->width  = 15;
-  // cloud->height = 1;
-  // cloud->points.resize (cloud->width * cloud->height);
-
-  // // Generate the data
-  // for (auto& point: *cloud)
-  // {
-  //   point.x = 1024 * rand () / (RAND_MAX + 1.0f);
-  //   point.y = 1024 * rand () / (RAND_MAX + 1.0f);
-  //   point.z = 1.0;
-  // }
-
-  // // Set a few outliers
-  // (*cloud)[0].z = 2.0;
-  // (*cloud)[3].z = -2.0;
-  // (*cloud)[6].z = 4.0;
-
-  // std::cerr << "Point cloud data: " << cloud->size () << " points" << std::endl;
-  // for (const auto& point: *cloud)
-  //   std::cerr << "    " << point.x << " "
-  //                       << point.y << " "
-  //                       << point.z << std::endl;
+// Fill in the cloud data
+  pcl::io::loadPCDFile<pcl::PointXYZ> ("./../../samples/1673625256.500800954.pcd", *cloud);
+ 
 
   pcl::ModelCoefficients::Ptr coefficients (new pcl::ModelCoefficients);
   pcl::PointIndices::Ptr inliers (new pcl::PointIndices);

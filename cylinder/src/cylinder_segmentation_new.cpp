@@ -21,6 +21,46 @@
 
 
 typedef pcl::PointXYZ PointT;
+ros::Publisher pub;
+
+void pointcloudCallback(const sensor_msgs::PointCloud2ConstPtr& msg)
+{
+    // Convert the ROS message to a PCL point cloud
+    pcl::PointCloud<pcl::PointXYZ>::Ptr cloud(new pcl::PointCloud<pcl::PointXYZ>);
+    pcl::fromROSMsg(*msg, *cloud);
+
+    // Create a segmentation object for circle detection
+    pcl::SACSegmentation<pcl::PointXYZ> seg;
+    seg.setOptimizeCoefficients(true);
+    seg.setModelType(pcl::SACMODEL_CIRCLE3D);
+    seg.setMethodType(pcl::SAC_RANSAC);
+    seg.setDistanceThreshold(0.01);
+    seg.setRadiusLimits(0.1, 0.5);
+
+    // Create a point inliers indices and model coefficients
+    pcl::PointIndices::Ptr inliers(new pcl::PointIndices);
+    pcl::ModelCoefficients::Ptr coefficients(new pcl::ModelCoefficients);
+
+    // Segment the point cloud
+    seg.setInputCloud(cloud);
+    seg.segment(*inliers, *coefficients);
+
+    // Extract the inliers from the point cloud
+    pcl::ExtractIndices<pcl::PointXYZ> extract;
+    extract.setInputCloud(cloud);
+    extract.setIndices(inliers);
+    extract.setNegative(false);
+    extract.filter(*cloud);
+
+    // Convert the PCL point cloud back to a ROS message
+    sensor_msgs::PointCloud2 output;
+    pcl::toROSMsg(*cloud, output);
+    output.header = msg->header;
+
+    // Publish the output point cloud
+    pub.publish(output);
+}
+
 int main ()
 {  // All the objects needed
   pcl::PCDReader reader;

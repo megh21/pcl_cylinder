@@ -18,10 +18,11 @@
 #include <pcl/conversions.h>
 #include <pcl_ros/transforms.h>
 
-
 typedef pcl::PointXYZ PointT;
+
 int main ()
-{  // All the objects needed
+{
+  // All the objects needed
   pcl::PCDReader reader;
   pcl::PassThrough<PointT> pass;
   pcl::NormalEstimation<PointT, pcl::Normal> ne;
@@ -31,8 +32,6 @@ int main ()
   pcl::ExtractIndices<pcl::Normal> extract_normals;
   pcl::search::KdTree<PointT>::Ptr tree (new pcl::search::KdTree<PointT> ());
 
-  // ros::init(argc, argv, "listener");
-  ros::NodeHandle n;
   // Datasets
   pcl::PointCloud<PointT>::Ptr cloud (new pcl::PointCloud<PointT>);
   pcl::PointCloud<PointT>::Ptr cloud_filtered (new pcl::PointCloud<PointT>);
@@ -41,21 +40,24 @@ int main ()
   pcl::PointCloud<pcl::Normal>::Ptr cloud_normals2 (new pcl::PointCloud<pcl::Normal>);
   pcl::ModelCoefficients::Ptr coefficients_plane (new pcl::ModelCoefficients), coefficients_cylinder (new pcl::ModelCoefficients);
   pcl::PointIndices::Ptr inliers_plane (new pcl::PointIndices), inliers_cylinder (new pcl::PointIndices);
+
   // Read in the cloud data
-  ros::Subscriber sub = n.subscribe("chatter", 10, *cloud);
-  // reader.read ("table_scene_mug_stereo_textured.pcd", *cloud);
-  //std::cerr << "PointCloud has: " << cloud->size () << " data points." << std::endl;
+  reader.read ("1673625258.659293644.pcd", *cloud);
+  std::cerr << "PointCloud has: " << cloud->size () << " data points." << std::endl;
+
   // Build a passthrough filter to remove spurious NaNs and scene background
   pass.setInputCloud (cloud);
   pass.setFilterFieldName ("z");
   pass.setFilterLimits (0, 1.5);
   pass.filter (*cloud_filtered);
   std::cerr << "PointCloud after filtering has: " << cloud_filtered->size () << " data points." << std::endl;
+
   // Estimate point normals
   ne.setSearchMethod (tree);
   ne.setInputCloud (cloud_filtered);
   ne.setKSearch (50);
   ne.compute (*cloud_normals);
+
   // Create the segmentation object for the planar model and set all the parameters
   seg.setOptimizeCoefficients (true);
   seg.setModelType (pcl::SACMODEL_NORMAL_PLANE);
@@ -68,15 +70,18 @@ int main ()
   // Obtain the plane inliers and coefficients
   seg.segment (*inliers_plane, *coefficients_plane);
   std::cerr << "Plane coefficients: " << *coefficients_plane << std::endl;
+
   // Extract the planar inliers from the input cloud
   extract.setInputCloud (cloud_filtered);
   extract.setIndices (inliers_plane);
   extract.setNegative (false);
+
   // Write the planar inliers to disk
   pcl::PointCloud<PointT>::Ptr cloud_plane (new pcl::PointCloud<PointT> ());
   extract.filter (*cloud_plane);
   std::cerr << "PointCloud representing the planar component: " << cloud_plane->size () << " data points." << std::endl;
   writer.write ("table_scene_mug_stereo_textured_plane.pcd", *cloud_plane, false);
+
   // Remove the planar inliers, extract the rest
   extract.setNegative (true);
   extract.filter (*cloud_filtered2);
@@ -84,9 +89,10 @@ int main ()
   extract_normals.setInputCloud (cloud_normals);
   extract_normals.setIndices (inliers_plane);
   extract_normals.filter (*cloud_normals2);
+  std::cerr << "here 1 " << std::endl;
   // Create the segmentation object for cylinder segmentation and set all the parameters
   seg.setOptimizeCoefficients (true);
-  seg.setModelType (pcl::SACMODEL_CYLINDER);
+  seg.setModelType (pcl::SACMODEL_SPHERE);
   seg.setMethodType (pcl::SAC_RANSAC);
   seg.setNormalDistanceWeight (0.1);
   seg.setMaxIterations (10000);
@@ -94,9 +100,11 @@ int main ()
   seg.setRadiusLimits (0, 0.1);
   seg.setInputCloud (cloud_filtered2);
   seg.setInputNormals (cloud_normals2);
+  std::cerr << "here 2 " << std::endl;
   // Obtain the cylinder inliers and coefficients
   seg.segment (*inliers_cylinder, *coefficients_cylinder);
   std::cerr << "Cylinder coefficients: " << *coefficients_cylinder << std::endl;
+  
   // Write the cylinder inliers to disk
   extract.setInputCloud (cloud_filtered2);
   extract.setIndices (inliers_cylinder);
@@ -104,7 +112,7 @@ int main ()
   pcl::PointCloud<PointT>::Ptr cloud_cylinder (new pcl::PointCloud<PointT> ());
   extract.filter (*cloud_cylinder);
   if (cloud_cylinder->points.empty ()) 
-    std::cerr << "Can't find the cylindrical component." << std::endl;
+    std::cerr << "Can't find the SPHERICAL component." << std::endl;
   else
   {
 	  std::cerr << "PointCloud representing the cylindrical component: " << cloud_cylinder->size () << " data points." << std::endl;

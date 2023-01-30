@@ -22,8 +22,8 @@ void pointcloudCallback(const sensor_msgs::PointCloud2ConstPtr& msg)
     seg.setOptimizeCoefficients(true);
     seg.setModelType(pcl::SACMODEL_CIRCLE3D);
     seg.setMethodType(pcl::SAC_RANSAC);
-    seg.setDistanceThreshold(0.01);
-    seg.setRadiusLimits(0.1, 0.5);
+    seg.setDistanceThreshold(0.001);
+    seg.setRadiusLimits(0.01, 0.5);
 
     // Create a point inliers indices and model coefficients
     pcl::PointIndices::Ptr inliers(new pcl::PointIndices);
