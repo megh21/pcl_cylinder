@@ -4,22 +4,13 @@
 ## Requirments
 
 - ROS Melodic
-
-### Use zed2i 
- - requires [zed sdk](https://www.stereolabs.com/developers/release/)
- - requires [zed ros wrapper](https://github.com/stereolabs/zed-ros-wrapper)
-
-```sh
-roslaunch zed_wrapper zed2i.launch 
+- install and build [ pcl ](https://pointclouds.org/downloads/)
+- [pcl_ros](http://wiki.ros.org/pcl_ros) 
+```bash
+   sudo apt-get update
+   sudo apt-get install pcl-tools
+   sudo apt-get install ros-melodc-pcl-ros
 ```
-
-### Use rviz
-use rviz to visualize the topic pointcloud2, topic name etc.
-
-### Use PCD file
-
-Example: `./samples/*.pcd`
-
 
 
 ## Getting Started
@@ -39,7 +30,7 @@ here, you will need:
 ## Installing and Building the project
 
 It is fairly easy to install the project, all you need to do is clone if from
-[GitHub](https://github.com/megh21) or
+[GitHub](https://github.com/megh21/pcl_cylinder) or
 
 (also on **GitHub**).
 
@@ -66,6 +57,24 @@ go to each folders build\\devel\\lib\\_file_name__\
 
 ```bash
 ./filename
+```
+### Use zed2i 
+ - requires [zed sdk](https://www.stereolabs.com/developers/release/)
+ - requires [zed ros wrapper](https://github.com/stereolabs/zed-ros-wrapper)
+  
+```sh
+roslaunch zed_wrapper zed2i.launch 
+```
+
+### Use rviz
+use rviz to visualize the topic pointcloud2, topic name etc.
+
+### Use PCD file
+
+Example: `./samples/*.pcd`
+
+```bash
+pcl_viewer *.pcd
 ```
 
 ## Contributing
